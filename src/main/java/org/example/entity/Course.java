@@ -14,16 +14,22 @@ public class Course {
     private String title;
     private String description;
 
-    // Связь с учителем (один пользователь может вести много курсов)
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
     private User teacher;
 
-    // Связь с модулями (один курс — много модулей)
-    // cascade = ALL значит, что если удалим курс, удалятся и его модули
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Module> modules;
 
-    // Связь с записями студентов
     @OneToMany(mappedBy = "course")
     private List<Enrollment> enrollments;
+
+    // Добавим связь с отзывами, чтобы потом не возвращаться
+    @OneToMany(mappedBy = "course")
+    private List<Review> reviews;
 }
