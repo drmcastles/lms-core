@@ -1,11 +1,16 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Table(name = "course")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,22 +19,11 @@ public class Course {
     private String title;
     private String description;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    private Category category;
+    @JsonBackReference // Чтобы не было бесконечного цикла в JSON
+    private Category category; // Вот это поле искал DataInitializer
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id")
-    private User teacher;
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Module> modules;
-
-    @OneToMany(mappedBy = "course")
-    private List<Enrollment> enrollments;
-
-    // Добавим связь с отзывами, чтобы потом не возвращаться
-    @OneToMany(mappedBy = "course")
-    private List<Review> reviews;
+    @Column(name = "teacher_id")
+    private Long teacherId;
 }
