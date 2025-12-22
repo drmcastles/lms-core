@@ -14,7 +14,6 @@ public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
