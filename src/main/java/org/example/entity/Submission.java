@@ -2,25 +2,33 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "submissions")
-@Data // Проверь, что эта аннотация на месте! Она создает методы setLesson и getLesson
+@Data // Генерирует геттеры, сеттеры, toString и equals
 public class Submission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    // Решение привязано к заданию
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
+
+    // Решение привязано к студенту
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private User student;
 
-    @ManyToOne
-    @JoinColumn(name = "lesson_id")
-    private Lesson lesson; // Поле должно называться именно так
-
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String content; // Текст решения
 
-    private Integer grade;
+    private LocalDateTime submissionDate;
+
+    private String status; // Например: SUBMITTED, GRADED
+
+    private Integer grade; // Оценка (может быть null до проверки)
 }

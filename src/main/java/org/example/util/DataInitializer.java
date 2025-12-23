@@ -1,15 +1,12 @@
 package org.example.util;
 
 import lombok.RequiredArgsConstructor;
-import org.example.entity.Course;
+import org.example.entity.*;
+
 import org.example.entity.Module;
-import org.example.entity.User;
-import org.example.repository.CourseRepository;
-import org.example.repository.ModuleRepository;
-import org.example.repository.UserRepository;
+import org.example.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -17,39 +14,49 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
+    private final AssignmentRepository assignmentRepository; // Добавили репозиторий заданий
 
     @Override
     public void run(String... args) {
-        // 1. Создаем тестового студента (чтобы studentId=1 работал)
+        // 1. Создаем тестового студента
         if (userRepository.count() == 0) {
             User student = new User();
             student.setName("Иван Иванов");
             student.setEmail("ivan@example.com");
-            // Если в твоей сущности есть поле role, раскомментируй строку ниже:
-            // student.setRole("STUDENT");
+            student.setRole("STUDENT");
             userRepository.save(student);
-            System.out.println(">>> Создан тестовый студент с ID: " + student.getId());
         }
 
-        // 2. Создаем тестовый курс (чтобы courseId=1 работал)
+        // 2. Создаем тестовый курс и модуль
         if (courseRepository.count() == 0) {
             Course course = new Course();
             course.setTitle("Основы Java Spring");
             course.setDescription("Курс по разработке REST API");
             courseRepository.save(course);
 
-            // Добавим сразу модуль к этому курсу
             Module module = new Module();
             module.setTitle("Введение в JPA");
             module.setCourse(course);
             moduleRepository.save(module);
 
-            System.out.println(">>> Создан тестовый курс с ID: " + course.getId());
+            // 3. Создаем тестовое задание (Assignment) для этого курса/модуля
+            if (assignmentRepository.count() == 0) {
+                Assignment task = new Assignment();
+                task.setTitle("Практика: Создание сущностей");
+                task.setDescription("Напишите код для сущности 'User' с использованием аннотаций JPA.");
+                // По ТЗ задание может быть связано с уроком или модулем.
+                // Для простоты привяжем к модулю, если в твоей сущности есть такое поле:
+                // task.setModule(module);
+
+                assignmentRepository.save(task);
+                System.out.println(">>> Тестовое задание создано с ID: " + task.getId());
+            }
+
+            System.out.println(">>> Тестовый курс и модуль созданы.");
         }
 
         System.out.println("-----------------------------------------");
-        System.out.println("БАЗА ДАННЫХ ГОТОВА К ТЕСТИРОВАНИЮ");
-        System.out.println("Используйте studentId=1 и courseId=1 в Swagger");
+        System.out.println("БАЗА ДАННЫХ ГОТОВА: Задания доступны для сдачи");
         System.out.println("-----------------------------------------");
     }
 }
