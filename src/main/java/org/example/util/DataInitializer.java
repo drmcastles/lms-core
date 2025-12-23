@@ -1,72 +1,55 @@
 package org.example.util;
 
 import lombok.RequiredArgsConstructor;
-import org.example.entity.*;
+import org.example.entity.Course;
 import org.example.entity.Module;
-import org.example.repository.*;
+import org.example.entity.User;
+import org.example.repository.CourseRepository;
+import org.example.repository.ModuleRepository;
+import org.example.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
-    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
-    private final LessonRepository lessonRepository;
-    private final QuizRepository quizRepository;
-    private final QuestionRepository questionRepository;
 
     @Override
-    @Transactional
     public void run(String... args) {
-        try {
-            System.out.println("🚀 Начинаем чистую вставку данных...");
+        // 1. Создаем тестового студента (чтобы studentId=1 работал)
+        if (userRepository.count() == 0) {
+            User student = new User();
+            student.setName("Иван Иванов");
+            student.setEmail("ivan@example.com");
+            // Если в твоей сущности есть поле role, раскомментируй строку ниже:
+            // student.setRole("STUDENT");
+            userRepository.save(student);
+            System.out.println(">>> Создан тестовый студент с ID: " + student.getId());
+        }
 
-            // 1. Категория
-            Category cat = new Category();
-            cat.setName("Backend Development");
-            categoryRepository.save(cat);
-
-            // 2. Курс
+        // 2. Создаем тестовый курс (чтобы courseId=1 работал)
+        if (courseRepository.count() == 0) {
             Course course = new Course();
-            course.setTitle("Spring Boot Masterclass");
-            course.setCategory(cat);
+            course.setTitle("Основы Java Spring");
+            course.setDescription("Курс по разработке REST API");
             courseRepository.save(course);
 
-            // 3. Модуль
+            // Добавим сразу модуль к этому курсу
             Module module = new Module();
-            module.setTitle("Основы JPA");
+            module.setTitle("Введение в JPA");
             module.setCourse(course);
-            module = moduleRepository.save(module);
+            moduleRepository.save(module);
 
-            // 4. Урок
-            Lesson lesson = new Lesson();
-            lesson.setTitle("Настройка сущностей");
-            lesson.setContent("В этом уроке мы изучим аннотации @Entity и @Table...");
-            lesson.setModule(module);
-            lessonRepository.save(lesson);
-
-            // 5. Квиз
-            Quiz quiz = new Quiz();
-            quiz.setTitle("Тест по JPA");
-            quiz.setModule(module);
-            quiz = quizRepository.save(quiz);
-
-            // 6. Вопрос для квиза
-            Question q = new Question();
-            q.setText("Что делает аннотация @Table?");
-            q.setCorrectAnswer("Указывает имя таблицы в БД");
-            q.setQuiz(quiz);
-            questionRepository.save(q);
-
-            System.out.println("✅ БАЗА ДАННЫХ УСПЕШНО ЗАПОЛНЕНА!");
-
-        } catch (Exception e) {
-            System.err.println("❌ ОШИБКА ПРИ ЗАПОЛНЕНИИ:");
-            e.printStackTrace();
+            System.out.println(">>> Создан тестовый курс с ID: " + course.getId());
         }
+
+        System.out.println("-----------------------------------------");
+        System.out.println("БАЗА ДАННЫХ ГОТОВА К ТЕСТИРОВАНИЮ");
+        System.out.println("Используйте studentId=1 и courseId=1 в Swagger");
+        System.out.println("-----------------------------------------");
     }
 }
