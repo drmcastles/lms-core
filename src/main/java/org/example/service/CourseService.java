@@ -1,9 +1,10 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.*;
+import org.example.dto.CourseDto;
+import org.example.dto.CourseFullDto;
+import org.example.dto.ModuleDto;
 import org.example.entity.Course;
-import org.example.entity.Module;
 import org.example.repository.CourseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,60 +21,45 @@ public class CourseService {
     @Transactional(readOnly = true)
     public List<CourseDto> getAllCourses() {
         return courseRepository.findAll().stream()
-                .map(this::mapToSimpleDto)
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public CourseFullDto getCourseById(Long id) {
+    public CourseFullDto getCourseFullInfo(Long id) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Курс не найден с id: " + id));
-        return mapToFullDto(course);
-    }
+                .orElseThrow(() -> new RuntimeException("Курс не найден"));
 
-    private CourseDto mapToSimpleDto(Course course) {
-        CourseDto dto = new CourseDto();
-        dto.setId(course.getId());
-        dto.setTitle(course.getTitle());
-        dto.setDescription(course.getDescription());
-        dto.setTeacherId(course.getTeacherId());
-        if (course.getCategory() != null) {
-            dto.setCategoryName(course.getCategory().getName());
-        }
-        return dto;
-    }
-
-    private CourseFullDto mapToFullDto(Course course) {
         CourseFullDto dto = new CourseFullDto();
         dto.setId(course.getId());
         dto.setTitle(course.getTitle());
-        dto.setDescription(course.getDescription());
-        dto.setTeacherId(course.getTeacherId());
-
-        if (course.getCategory() != null) {
-            dto.setCategoryName(course.getCategory().getName());
-        }
 
         if (course.getModules() != null) {
-            List<ModuleDto> moduleDtos = course.getModules().stream().map(m -> {
+            dto.setModules(course.getModules().stream().map(m -> {
                 ModuleDto mDto = new ModuleDto();
                 mDto.setId(m.getId());
                 mDto.setTitle(m.getTitle());
-
-                if (m.getLessons() != null) {
-                    List<LessonDto> lessonDtos = m.getLessons().stream().map(l -> {
-                        LessonDto lDto = new LessonDto();
-                        lDto.setId(l.getId());
-                        lDto.setTitle(l.getTitle());
-                        lDto.setContent(l.getContent());
-                        return lDto;
-                    }).collect(Collectors.toList());
-                    mDto.setLessons(lessonDtos);
-                }
                 return mDto;
-            }).collect(Collectors.toList());
-            dto.setModules(moduleDtos);
+            }).collect(Collectors.toList()));
         }
+
+        return dto;
+    }
+
+    @Transactional
+    public CourseDto createCourse(CourseDto dto) {
+        Course course = new Course();
+        course.setTitle(dto.getTitle());
+        course.setCategoryName(dto.getCategoryName());
+        Course saved = courseRepository.save(course);
+        return convertToDto(saved);
+    }
+
+    private CourseDto convertToDto(Course course) {
+        CourseDto dto = new CourseDto();
+        dto.setId(course.getId());
+        dto.setTitle(course.getTitle());
+        dto.setCategoryName(course.getCategoryName());
         return dto;
     }
 }

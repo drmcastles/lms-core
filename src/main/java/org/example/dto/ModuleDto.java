@@ -7,5 +7,5 @@ import java.util.List;
 public class ModuleDto {
     private Long id;
     private String title;
-    private List<LessonDto> lessons; // Вложенный список уроков
+    private List<LessonDto> lessons; // Добавляем это поле
 }

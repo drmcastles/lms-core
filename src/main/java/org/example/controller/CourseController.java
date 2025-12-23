@@ -16,12 +16,18 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public List<CourseDto> getAllCourses() {
+    public List<CourseDto> getAll() {
         return courseService.getAllCourses();
     }
 
+
     @GetMapping("/{id}")
-    public CourseFullDto getCourseById(@PathVariable Long id) {
-        return courseService.getCourseById(id);
+    public CourseFullDto getById(@PathVariable Long id) {
+        return courseService.getCourseFullInfo(id);
+    }
+
+    @PostMapping
+    public CourseDto create(@RequestBody CourseDto dto) {
+        return courseService.createCourse(dto);
     }
 }
