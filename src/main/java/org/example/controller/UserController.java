@@ -14,6 +14,14 @@ public class UserController {
 
     private final UserRepository userRepository;
 
+    @PostMapping("/register")
+    public User registerUser(@RequestBody User user) {
+        // Если роль не указана, по умолчанию ставим STUDENT
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("STUDENT");
+        }
+        return userRepository.save(user);
+    }
     // Создать нового пользователя (Студента или Преподавателя)
     @PostMapping
     public User createUser(@RequestBody User user) {
