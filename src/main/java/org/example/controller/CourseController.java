@@ -1,11 +1,10 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.entity.Course;
-import org.example.repository.CourseRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.example.dto.CourseDto;
+import org.example.dto.CourseFullDto;
+import org.example.service.CourseService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,10 +13,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseController {
 
-    private final CourseRepository courseRepository;
+    private final CourseService courseService;
 
     @GetMapping
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public List<CourseDto> getAllCourses() {
+        return courseService.getAllCourses();
+    }
+
+    @GetMapping("/{id}")
+    public CourseFullDto getCourseById(@PathVariable Long id) {
+        return courseService.getCourseById(id);
     }
 }

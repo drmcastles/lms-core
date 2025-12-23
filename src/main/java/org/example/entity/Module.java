@@ -1,14 +1,14 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "module")
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,9 @@ public class Module {
 
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
+    @JsonIgnore // Жестко обрываем связь для Jackson
     private Course course;
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)

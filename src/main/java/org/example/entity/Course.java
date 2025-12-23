@@ -1,18 +1,15 @@
 package org.example.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "course")
 @Getter
 @Setter
-@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,16 +17,13 @@ public class Course {
 
     private String title;
     private String description;
+    private Long teacherId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    @JsonBackReference
+    @JsonIgnoreProperties("courses")
     private Category category;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Module> modules;
-
-    @Column(name = "teacher_id")
-    private Long teacherId;
 }

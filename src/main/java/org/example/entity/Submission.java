@@ -1,26 +1,26 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
 @Table(name = "submissions")
-@Getter
-@Setter
+@Data // Проверь, что эта аннотация на месте! Она создает методы setLesson и getLesson
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "TEXT")
-    private String content;
-    private Integer score;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "student_id")
     private User student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignment_id")
-    private Assignment assignment;
+    @ManyToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson; // Поле должно называться именно так
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    private Integer grade;
 }
