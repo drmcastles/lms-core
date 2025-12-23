@@ -1,10 +1,13 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.List;
 
 @Entity
+@Table(name = "module")
 @Getter @Setter @NoArgsConstructor
 public class Module {
     @Id
@@ -13,9 +16,13 @@ public class Module {
 
     private String title;
 
-    @ManyToOne // Много модулей относятся к одному курсу
+    @ManyToOne
+    @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL) // Один модуль — много уроков
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
     private List<Lesson> lessons;
+
+    @OneToOne(mappedBy = "module", cascade = CascadeType.ALL)
+    private Quiz quiz;
 }

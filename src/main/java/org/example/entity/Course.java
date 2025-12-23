@@ -1,10 +1,12 @@
 package org.example.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Entity
 @Table(name = "course")
@@ -19,10 +21,14 @@ public class Course {
     private String title;
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonBackReference // Чтобы не было бесконечного цикла в JSON
-    private Category category; // Вот это поле искал DataInitializer
+    @JsonBackReference
+    private Category category;
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Module> modules;
 
     @Column(name = "teacher_id")
     private Long teacherId;
