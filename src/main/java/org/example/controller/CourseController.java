@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import jakarta.validation.Valid; // Добавить этот импорт
 import lombok.RequiredArgsConstructor;
 import org.example.dto.CourseDto;
 import org.example.dto.CourseFullDto;
@@ -20,14 +21,13 @@ public class CourseController {
         return courseService.getAllCourses();
     }
 
-
     @GetMapping("/{id}")
     public CourseFullDto getById(@PathVariable Long id) {
         return courseService.getCourseFullInfo(id);
     }
 
     @PostMapping
-    public CourseDto create(@RequestBody CourseDto dto) {
+    public CourseDto create(@Valid @RequestBody CourseDto dto) { // Добавили только @Valid
         return courseService.createCourse(dto);
     }
 }

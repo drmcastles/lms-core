@@ -1,25 +1,27 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
+import jakarta.validation.constraints.Email; // Проверь наличие
+import jakarta.validation.constraints.NotBlank; // Проверь наличие
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Имя пользователя обязательно")
     private String name;
+
+    @Email(message = "Некорректный формат email")
+    @NotBlank(message = "Email обязателен")
+    @Column(unique = true)
     private String email;
 
-    // Добавляем роль: STUDENT или INSTRUCTOR
     private String role;
-
-    @OneToMany(mappedBy = "student")
-    @JsonIgnore
-    private List<Enrollment> enrollments;
 }
