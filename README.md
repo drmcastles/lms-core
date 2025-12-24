@@ -20,7 +20,7 @@ Lombok — Оптимизация кода
 
 Bash
 
-mvn clean package -DskipTests \n
+mvn clean package -DskipTests
 Запуск инфраструктуры:
 
 Bash
