@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 🎓 LMS Core System
 
 LMS Core System — бэкенд-платформа для управления образовательными курсами, реализованная на Spring Boot 3.2 и PostgreSQL.
@@ -53,9 +54,58 @@ CREATE DATABASE lms_db;
 2. Конфигурация
 
 src/main/resources/application.properties
+=======
+# LMS Core System
 
-server.port=8081
+Backend-платформа для управления образовательными курсами на Spring Boot 3.2 и PostgreSQL.  
+Проект реализует управление контентом, регистрацию студентов через связь Many-to-Many, систему заданий и модуль тестирования.
 
+## Технологический стек
+
+- Java 22
+- Spring Boot 3.2
+   - Spring Data JPA
+   - Spring Web
+   - Spring Validation
+- PostgreSQL 15
+- Docker, Docker Compose
+- Swagger (SpringDoc)
+- Lombok
+
+## Запуск проекта
+
+### Docker (рекомендуется)
+
+- Сборка проекта:  
+  `mvn clean package -DskipTests`
+
+- Запуск контейнеров:  
+  `docker-compose up --build -d`
+
+- Приложение доступно на порту **8081**
+
+- Проверка статуса:  
+  `docker-compose ps`
+
+### Локальный запуск
+
+- Создание базы данных:  
+  `CREATE DATABASE lms_db;`
+
+- Конфигурация:  
+  `src/main/resources/application.properties`
+
+  Параметры подключения:
+   - `server.port=8081`
+   - `spring.datasource.url=jdbc:postgresql://localhost:5433/lms_db`
+   - `spring.datasource.username=postgres`
+   - `spring.datasource.password=1151`
+>>>>>>> d46cd73 (chore: readme)
+
+- Запуск приложения:  
+  `mvn spring-boot:run`
+
+<<<<<<< HEAD
 spring.datasource.url=jdbc:postgresql://localhost:5433/lms_db
 spring.datasource.username=postgres
 spring.datasource.password=1151
@@ -137,3 +187,49 @@ Swagger UI используется для тестирования API
 📊 test_percent.png — отчет о покрытии кода тестами
 
 🐳 docker_success.png — контейнеры в статусе UP
+=======
+## Функциональность
+
+### Курсы и пользователи
+
+- Реализована связь Many-to-Many между пользователями и курсами
+- Студенты могут записываться на курсы и отслеживать подписки
+- Связующие таблицы создаются автоматически через Hibernate
+
+### Задания (Assignments)
+
+- Студенты отправляют решения в виде ссылок
+- Повторная отправка одного задания запрещена
+- Преподаватель может выставлять оценки
+
+### Тесты и викторины (Quizzes)
+
+- Структура данных:
+   - Quiz
+   - Question
+   - AnswerOption
+- Результаты прохождения сохраняются в QuizResult
+- Фиксируется итоговый балл и время завершения
+
+## Тестирование
+
+- Cascade Delete — удаление связанных сущностей при удалении курса
+- Lazy Loading — проверка доступа к данным вне Hibernate-сессии
+- Integration Tests — запись студентов на курсы напрямую через БД
+
+## Валидация API
+
+- Проверка API через Swagger UI
+- При некорректных данных возвращается 400 Bad Request
+- Используется jakarta.validation
+
+## Скриншоты
+
+Папка `/screenshots`:
+
+- `test.png` — успешное выполнение тестов
+- `cascade_end.png` — логи каскадных операций Hibernate
+- `validation_test.png` — 400 Bad Request в Swagger
+- `test_percent.png` — покрытие тестами
+- `docker_success.png` — контейнеры в статусе UP
+>>>>>>> d46cd73 (chore: readme)
