@@ -1,14 +1,15 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
-@Data
+@Getter
+@Setter
 public class Course {
 
     @Id
@@ -16,24 +17,22 @@ public class Course {
     private Long id;
 
     private String title;
+    private String description; // Вернули описание
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    // Для ошибки в App.java (нужен объект Category)
+    // ВЕРНУЛИ СВЯЗЬ С КАТЕГОРИЕЙ
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    // Для ошибки в CourseService.java (нужна строка)
-    // Если сервис хочет сохранять именно строку напрямую в Course
-    private String categoryName;
+    // Связь со студентами (для критерия на 3 балла)
+    @ManyToMany
+    @JoinTable(
+            name = "course_students",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private Set<User> students = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<Module> modules = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "instructor_id")
-    private User instructor;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<Module> modules = new HashSet<>();
 }

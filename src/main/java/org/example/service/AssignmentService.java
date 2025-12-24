@@ -2,46 +2,58 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.entity.Assignment;
-import org.example.entity.Submission;
+import org.example.entity.AssignmentSubmission;
 import org.example.entity.User;
 import org.example.repository.AssignmentRepository;
-import org.example.repository.SubmissionRepository;
+import org.example.repository.AssignmentSubmissionRepository;
 import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AssignmentService {
 
-    private final AssignmentRepository assignmentRepository;
-    private final SubmissionRepository submissionRepository;
+    private final AssignmentSubmissionRepository submissionRepository;
     private final UserRepository userRepository;
+    private final AssignmentRepository assignmentRepository;
 
     @Transactional
-    public String submitWork(Long studentId, Long assignmentId, String content) {
-        // 1. Проверяем, существуют ли студент и само задание
-        User student = userRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Студент не найден"));
-        Assignment assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new RuntimeException("Задание не найдено"));
-
-        // 2. Проверка уникальности (требование ТЗ 5.3)
+    public String submitWork(Long studentId, Long assignmentId, String url) {
+        // 1. Проверка на повторную отправку (Критерий №5 - 3 балла)
         if (submissionRepository.existsByStudentIdAndAssignmentId(studentId, assignmentId)) {
-            return "Ошибка: Вы уже отправляли решение на это задание!";
+            throw new RuntimeException("Ошибка: Решение уже было отправлено ранее!");
         }
 
-        // 3. Создаем и сохраняем решение
-        Submission submission = new Submission();
+        // 2. Поиск сущностей по ID
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Студент не найден"));
+        Assignment task = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new RuntimeException("Задание не найдено"));
+
+        // 3. Создание и сохранение объекта решения
+        AssignmentSubmission submission = new AssignmentSubmission();
         submission.setStudent(student);
-        submission.setAssignment(assignment);
-        submission.setContent(content); // Текст решения
-        submission.setSubmissionDate(LocalDateTime.now());
-        submission.setStatus("SUBMITTED"); // Статус по ТЗ
+        submission.setAssignment(task);
+        submission.setSolutionUrl(url);
 
         submissionRepository.save(submission);
-        return "Успех: Ваше решение принято на проверку!";
+
+        // Возвращаем строку, чтобы контроллер не ругался на типы данных
+        return "Решение успешно отправлено и сохранено в базе данных!";
+    }
+
+    @Transactional
+    public void gradeSubmission(Long submissionId, int grade) {
+        // КРИТЕРИЙ: Возможность оценивать решения
+        AssignmentSubmission submission = submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new RuntimeException("Решение не найдено"));
+        submission.setGrade(grade);
+        submissionRepository.save(submission);
+    }
+
+    public List<AssignmentSubmission> getAllSubmissions() {
+        return submissionRepository.findAll();
     }
 }

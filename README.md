@@ -55,13 +55,19 @@ mvn spring-boot:run
 ## 📸 Скриншоты с логами тестов
 (Файлы находятся в папке /screenshots)
 
-1. **Логи LazyLoading**
+1 **Успешное прохождение тестов**
+   ![Test Results](screenshots/test.png)
+
+2**Логи LazyLoading**
    ![Test Results](screenshots/lazy_loading.png)
 
-2. **Логи каскадного удаления (Hibernate SQL)**
+3**Логи каскадного удаления (Hibernate SQL)**
    ![Cascade Start](screenshots/cascade_start.png)
    ![Cascade End](screenshots/cascade_end.png)
 
-3. **Результат валидации API**
+4**Результат валидации API**
    ![Validation API](screenshots/validation_test.png)
    *Скриншот из Swagger UI с ответом 400 Bad Request.*
+
+5**Процент покрытия тестами**
+![Test Results](screenshots/test_percent.png)

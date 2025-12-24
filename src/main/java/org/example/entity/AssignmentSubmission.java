@@ -3,25 +3,24 @@ package org.example.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "quiz_results")
+@Table(name = "assignment_submissions")
 @Getter
 @Setter
-public class QuizResult {
+public class AssignmentSubmission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int score; // Итоговый балл
-    private LocalDateTime completedAt;
+    private String solutionUrl; // Ссылка на решение
+    private Integer grade;      // Оценка (от 0 до 100)
 
     @ManyToOne
     @JoinColumn(name = "student_id")
     private User student;
 
     @ManyToOne
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 }
