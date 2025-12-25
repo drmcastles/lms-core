@@ -1,15 +1,18 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "courses")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Course {
 
     @Id
@@ -17,22 +20,31 @@ public class Course {
     private Long id;
 
     private String title;
-    private String description; // Вернули описание
+    private String description;
 
-    // ВЕРНУЛИ СВЯЗЬ С КАТЕГОРИЕЙ
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    // Связь со студентами (для критерия на 3 балла)
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
+
+    // Это поле необходимо для теста testLazyLoadingException и testCascadeDeleteCourse
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Module> modules = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "course_students",
             joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> students = new HashSet<>();
+    @JsonIgnore
+    private List<User> students = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Set<Module> modules = new HashSet<>();
+    @OneToMany(mappedBy = "course")
+    @JsonIgnore
+    private List<Assignment> assignments = new ArrayList<>();
 }

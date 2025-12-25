@@ -1,32 +1,32 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Имя пользователя обязательно")
     private String name;
-
-    @Email(message = "Некорректный формат email")
-    @NotBlank(message = "Email обязателен")
-    @Column(unique = true)
     private String email;
+    private String role; // STUDENT, TEACHER, ADMIN
 
-    private String role;
+    @OneToMany(mappedBy = "teacher")
+    @JsonIgnore // Чтобы при выводе юзера не тянуть список всех его курсов
+    private List<Course> teacherCourses;
 
     @ManyToMany(mappedBy = "students")
-    private Set<Course> courses = new HashSet<>();
+    @JsonIgnore // Чтобы не было цикла Студент -> Курс -> Студент
+    private List<Course> courses;
 }

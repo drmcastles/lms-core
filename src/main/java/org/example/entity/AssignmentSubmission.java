@@ -1,26 +1,39 @@
 package org.example.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "assignment_submissions")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AssignmentSubmission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String solutionUrl; // Ссылка на решение
-    private Integer grade;      // Оценка (от 0 до 100)
+    @Column(nullable = false)
+    private String solutionUrl; // Ссылка на решение студента
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
+    private Integer grade; // Оценка (заполняется преподавателем)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
-    @ManyToOne
-    @JoinColumn(name = "assignment_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
+
+    private LocalDateTime submittedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        submittedAt = LocalDateTime.now();
+    }
 }
