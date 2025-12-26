@@ -18,24 +18,25 @@ Backend-платформа для управления образователь�
 1. **Сборка проекта:** `mvn clean package -DskipTests`
 2. **Запуск инфраструктуры:** `docker-compose up --build -d`
 3. **Swagger UI:** Доступен по адресу: [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
+   *Примечание: В Docker-окружении база данных настраивается автоматически.*
 
 ### Вариант 2: Локальный запуск
-1. **База данных:** Создайте БД `lms_db` в PostgreSQL.
-2. **Конфигурация:** Настройте параметры в `src/main/resources/application.properties`:
-  - `server.port=8081`
-  - `spring.datasource.url=jdbc:postgresql://localhost:5433/lms_db`
-  - `spring.datasource.username=postgres`
-  - `spring.datasource.password=1151`
-3. **Запуск:** `mvn spring-boot:run`
+1. **База данных:** Создайте базу данных (например, `lms_db`) в вашей установке PostgreSQL.
+2. **Конфигурация:** Настройте параметры подключения в `src/main/resources/application.properties`:
+    - `server.port=8081`
+    - `spring.datasource.url=jdbc:postgresql://localhost:5432/ваша_бд`
+    - `spring.datasource.username=ваш_логин`
+    - `spring.datasource.password=ваш_пароль`
+3. **Запуск:** Выполните команду `mvn spring-boot:run` или запустите проект через IDE.
 
 ---
 
 ## 🏗 Функциональные возможности
 
 ### 📚 Управление обучением (Many-to-Many)
-- **Гибкие связи:** Реализована полноценная связь Студенты ↔ Курсы с автоматической генерацией связующих таблиц.
+- **Гибкие связи:** Реализована полноценная связь Студенты ↔ Курсы.
 - **Фильтрация:** Поиск курсов по категориям (`/api/courses?categoryId=1`).
-- **Защита от рекурсии:** Использование `@JsonIgnore` для корректной сериализации цикличных связей (User-Course-Category).
+- **Защита от рекурсии:** Использование `@JsonIgnore` для корректной сериализации цикличных связей.
 
 ### 📝 Система заданий (Assignments)
 - **Отправка решений:** Студенты загружают ссылки на выполненные работы.
@@ -47,7 +48,7 @@ Backend-платформа для управления образователь�
 
 ### 🧠 Тесты и викторины (Quizzes)
 - **Структура:** Поддержка иерархии Quiz → Questions → Answer Options.
-- **Результаты:** Фиксация итогового балла и времени завершения в сущности `QuizResult`.
+- **Результаты:** Фиксация итогового балла и времени завершения.
 
 ---
 
@@ -55,29 +56,19 @@ Backend-платформа для управления образователь�
 
 Проект покрыт тестами на разных уровнях архитектуры:
 
-1. **LmsLogicTest (Unit/Logic):**
-  - **Cascade Delete:** Проверка автоматического удаления связанных модулей и заданий при удалении курса.
-  - **Lazy Loading:** Верификация ленивой загрузки данных Hibernate вне транзакций.
-
-2. **LmsIntegrationTest (Integration):**
-  - Проверка взаимодействия с реальной базой данных.
-  - Тестирование корректности записи студентов на курсы.
-
-3. **SmokeApiTest / ApiTest (API):**
-  - Проверка доступности эндпоинтов и корректности JSON-ответов.
-  - Верификация статус-кодов (200 OK, 400 Bad Request).
+1. **LmsLogicTest (Unit/Logic):** Cascade Delete и Lazy Loading.
+2. **LmsIntegrationTest (Integration):** Проверка взаимодействия с базой данных и Many-to-Many связей.
+3. **SmokeApiTest / ApiTest (API):** Доступность эндпоинтов и корректность JSON/статус-кодов.
 
 ---
 
 ## 🛡 Надежность и Валидация
 
-- **Global Exception Handling:** Реализован `@ControllerAdvice` для централизованной обработки ошибок (например, 404 Not Found) с возвратом понятного JSON-ответа.
-- **Jakarta Validation:** Валидация входных данных на уровне контроллеров (`@Min`, `@Max`, `@NotBlank`).
+- **Global Exception Handling:** Централизованная обработка ошибок через `@ControllerAdvice`.
+- **Jakarta Validation:** Валидация входных данных (`@Min`, `@Max`, `@NotBlank`).
 
 ---
 
 ## 📸 Скриншоты работы
-Скриншоты ключевых этапов находятся в папке `/screenshots`:
-- `test.png` — успешное прохождение всех тестов.
-- `validation_test.png` — пример обработки 400 Bad Request.
-- `docker_success.png` — контейнеры в статусе UP.
+Скриншоты находятся в папке `/screenshots`:
+- `test.png`, `validation_test.png`, `docker_success.png`.
