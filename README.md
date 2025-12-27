@@ -70,5 +70,19 @@ Backend-платформа для управления образователь�
 ---
 
 ## 📸 Скриншоты работы
-Скриншоты находятся в папке `/screenshots`:
-- `cascade_delete_test.png`, `lazy_loading.png`, `docker_test.png`, `get_courses.png`, `post_enroll.png`.
+
+### Тестирование каскадного удаления
+![Cascade Delete Test](screenshots/cascade_delete_test.png)
+
+### Проверка ленивой загрузки (Lazy Loading)
+![Lazy Loading](screenshots/lazy_loading.png)
+
+### Работа в Docker
+![Docker Success](screenshots/docker_test.png)
+
+### Примеры API запросов
+**Получение курсов (GET):**
+![Get Courses](screenshots/get_courses.png)
+
+**Запись на курс (POST):**
+![Post Enroll](screenshots/post_enroll.png)
