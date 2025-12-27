@@ -75,7 +75,7 @@ Backend-платформа для управления образователь�
 ![Cascade Delete Test](screenshots/cascade_delete_test.png)
 
 ### Проверка ленивой загрузки (Lazy Loading)
-![Lazy Loading](screenshots/lazy_loading.png)
+![Lazy Loading](screenshots/lazy_loading_test.png)
 
 ### Работа в Docker
 ![Docker Success](screenshots/docker_test.png)
