@@ -71,4 +71,4 @@ Backend-платформа для управления образователь�
 
 ## 📸 Скриншоты работы
 Скриншоты находятся в папке `/screenshots`:
-- `test.png`, `validation_test.png`, `docker_success.png`.
+- `cascade_delete_test.png`, `lazy_loading.png`, `docker_test.png`, `get_courses.png`, `post_enroll.png`.
